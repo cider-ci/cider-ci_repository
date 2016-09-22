@@ -27,10 +27,6 @@
 
 ;### update repository ########################################################
 
-(defn fetch-and-update [id]
-  (logging/warn 'fetch-and-update "does not do anything yet")
-  )
-
 (defn- git-fetch-and-update-interval [repository]
   (time/seconds
     (snatch
@@ -42,10 +38,10 @@
   "Returns the timestamp of the most resent (succeeded or failed) fetch or nil."
   (let [{last-fetched-at :last_fetched_at
          last-fetch-failed-at :last_fetch_failed_at} repository]
-    (cond (and last-fetched-at
-               last-fetch-failed-at) (if (time/after? last-fetched-at last-fetch-failed-at)
-                                       last-fetched-at last-fetch-failed-at)
-          :else (or last-fetched-at last-fetch-failed-at))))
+    (if (and last-fetched-at last-fetch-failed-at)
+      (if (time/after? last-fetched-at last-fetch-failed-at)
+        last-fetched-at last-fetch-failed-at)
+      (or last-fetched-at last-fetch-failed-at))))
 
 (defn- git-fetch-is-due? [repository]
   (if-let [last-fetched-at (last-succeeded-or-failed-fetch-at repository)]

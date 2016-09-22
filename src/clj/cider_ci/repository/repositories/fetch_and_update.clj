@@ -121,7 +121,7 @@
       (system/exec! ["git" "init" "--bare" path]))
     (system/exec!
       ["git" "fetch" (git-url repository) "--force" "--tags" "--prune"  "+*:*"]
-      {:timeout "10 Minutes", :dir path, :env {"TERM" "VT-100"}})
+      {:in "\n" :timeout "10 Minutes", :dir path, :env {"TERM" "VT-100"}})
     (system/exec!
       ["git" "update-server-info"]
       {:dir path :env {"TERM" "VT-100"}})
@@ -130,7 +130,11 @@
     (state/update-repo-branches (:id repository))
     true
     (catch Exception e
+      ; TODO prevent instant re-fetching!
+      ; add a fail counter and use it with to lag refetching
+      ; something with min pow and
       (swap-in-repo-value (:id repository) :last_fetch_failed_at (time/now))
+      (swap-in-repo-value (:id repository) :state "idle")
       (set-repo-issue (:id repository) "fetch-error"
                       {:title "Exception during git fetch"
                        :description (str e) })
