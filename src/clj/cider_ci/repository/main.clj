@@ -9,6 +9,8 @@
 
     [cider-ci.repository.notifications.core :as notifications]
     [cider-ci.repository.repositories.fetch-scheduler :as fetch-scheduler]
+    [cider-ci.repository.repositories.fetch-and-update]
+
     [cider-ci.repository.state :as state]
     [cider-ci.repository.web :as web]
 
@@ -36,6 +38,7 @@
     (cider-ci.utils.app/init web/build-main-handler)
     (assert-proper-context!)
     (state/initialize)
+    (cider-ci.repository.repositories.fetch-and-update/initialize)
     (fetch-scheduler/initialize)
     (notifications/initialize)
     ))

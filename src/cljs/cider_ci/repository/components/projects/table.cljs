@@ -31,9 +31,11 @@
 (defn state-icon [project]
   (fn [project]
     (cond
-      (not= (:state project) "idle") [:i.fa.fa-refresh.fa-spin.text-warning]
-      (not (empty? (:issues project))) [:i.fa.fa-warning.text-danger]
-      :else [:i.fa.fa-check-circle.text-success]
+      (= (:state project) "fetching") [:i.fa.fa-fw.fa-refresh.fa-spin.text-warning]
+      (= (:state project) "pending") [:i.fa.fa-fw.fa-spinner.fa-pulse.text-warning]
+      (not (empty? (:issues project))) [:i.fa.fa-fw.fa-warning.text-danger]
+      (not= (:state project) "idle") [:i.fa.fa-fw.fa-question-circle.text-warning]
+      :else [:i.fa.fa-fw.fa-check-circle.text-success]
       )))
 
 (defn row-contextual-class [project]

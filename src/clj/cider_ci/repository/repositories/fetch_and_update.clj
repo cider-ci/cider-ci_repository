@@ -9,6 +9,7 @@
     [cider-ci.repository.repositories.shared :refer :all]
     [cider-ci.repository.state :as state]
 
+    [cider-ci.utils.config :as config :refer [get-config]]
     [cider-ci.utils.fs :as ci-fs]
     [cider-ci.utils.rdbms :as rdbms]
     [cider-ci.utils.system :as system]
@@ -24,6 +25,10 @@
     [logbug.debug :as debug :refer [I> I>> identity-with-logging]]
     [logbug.thrown :as thrown]
 
+    )
+
+  (:import
+    [java.util.concurrent Executors ExecutorService Callable]
     ))
 
 
@@ -100,6 +105,9 @@
            (assoc-in db [:repositories id :state] state))
          (str id)))
 
+(defn get-repo-state [id]
+  (-> @state/db (get-in [:repositories (str id) :state])))
+
 (defn set-repo-issue [id issue-key properties]
   (swap! state/db assoc-in
          [:repositories (str id) :issues issue-key] properties))
@@ -121,7 +129,7 @@
       (system/exec! ["git" "init" "--bare" path]))
     (system/exec!
       ["git" "fetch" (git-url repository) "--force" "--tags" "--prune"  "+*:*"]
-      {:in "\n" :timeout "10 Minutes", :dir path, :env {"TERM" "VT-100"}})
+      {:in "\n" :timeout "30 Minutes", :dir path, :env {"TERM" "VT-100"}})
     (system/exec!
       ["git" "update-server-info"]
       {:dir path :env {"TERM" "VT-100"}})
@@ -141,15 +149,35 @@
       (throw e))
     (finally (set-repo-state (:id repository) "idle"))))
 
-(defn fetch-and-update [repository]
-  (debug/with-logging
-    {}
-    (future
-      (locking (str "fetch-and-update_" (-> repository :id str))
-        (let [path (repository-fs-path repository)]
-          (and (git-fetch repository path)
-               (update-branches repository path)))))))
 
+;##############################################################################
+
+(def fetch-and-update-pool (atom nil))
+
+(defn fetch-and-update [repository]
+  (catcher/with-logging
+    {}
+    (if-not (condp = (get-repo-state (:id repository))
+              nil true
+              "idle" true
+              false)
+      (logging/warn "The repository is not idle; skipping fetch-and-update"
+                    (get-in @state/db [:repositories (str (:id repository))]))
+      (do
+        (set-repo-state (:id repository) "pending")
+        (.submit @fetch-and-update-pool
+                 (cast Callable (fn []
+                                  (let [path (repository-fs-path repository)]
+                                    (and (git-fetch repository path)
+                                         (update-branches repository path))))))))))
+
+
+;##############################################################################
+
+(defn initialize []
+  (let [fetch-and-update-pool-size (or (-> (get-config) :max_concurrent_fetch_and_updates) 3)]
+    (reset! fetch-and-update-pool
+            (Executors/newFixedThreadPool fetch-and-update-pool-size))))
 
 ;(->> ["SELECT * FROM repositories"] (jdbc/query (rdbms/get-ds)) first fetch-and-update)
 
