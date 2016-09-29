@@ -109,7 +109,6 @@
       ring.middleware.json/wrap-json-body
       ring.middleware.json/wrap-json-response
       routing/wrap-shutdown
-      status/wrap
       web.ui/wrap
       wrap-accept
       web.push/wrap
@@ -119,6 +118,7 @@
       cookies/wrap-cookies
       (ring.middleware.defaults/wrap-defaults {:static {:resources "public"}})
       update-notifications/wrap
+      status/wrap
       (routing/wrap-prefix context)
       routing/wrap-exception))
 
