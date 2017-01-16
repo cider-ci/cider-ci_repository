@@ -72,6 +72,6 @@
                        :aot [cider-ci.WebstackException #"cider-ci.*"]
                        :uberjar-name "ui2.jar"
                        }}
-  :main cider-ci.ui2.main
+  :main cider-ci.main
   :repl-options {:timeout  120000}
   )
