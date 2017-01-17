@@ -1,4 +1,4 @@
-(ns cider-ci.ui2.ui.state
+(ns cider-ci.ui.state
   (:refer-clojure :exclude [str keyword])
 
   (:require-macros

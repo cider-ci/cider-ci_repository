@@ -9,7 +9,10 @@
 
     [compojure.core :as cpj]
 
-    [cider-ci.repository.web :as repository.web]
+    [cider-ci.repository.web]
+    [cider-ci.ui2.web]
+
+    [ring.util.response]
 
     [clj-logging-config.log4j :as logging-config]
     [clojure.tools.logging :as logging]
@@ -23,13 +26,20 @@
    :body "Not found!"})
 
 (def repositories-handler
-  (repository.web/build-main-handler "/cider-ci/repositories"))
+  (cider-ci.repository.web/build-main-handler "/cider-ci/repositories"))
+
+(def ui2-handler
+  (cider-ci.ui2.web/build-main-handler "/cider-ci/ui2" ))
+
+(def redirect-to-ui2
+  (ring.util.response/redirect "/cider-ci/ui2/"))
 
 (def routes
   (cpj/routes
     (cpj/ANY "/cider-ci/repositories/*" [] repositories-handler)
-    (cpj/ANY "*" [] dead-end-handler)
-    ))
+    (cpj/ANY "/cider-ci/ui2/*" [] ui2-handler)
+    (cpj/GET "/" [] redirect-to-ui2)
+    (cpj/ANY "*" [] dead-end-handler)))
 
 (defn build-main-handler [_]
   routes)

@@ -37,6 +37,7 @@
                  :source-map true
                  :optimizations :none
                  :pretty-print  true}}}}
+
   :minify-assets {:assets
                   {"resources/public/css/site.min.css"
                    "resources/public/css/site.css"}}
@@ -70,7 +71,7 @@
                        :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
                        :resource-paths ["target/cljsbuild"]
                        :aot [cider-ci.WebstackException #"cider-ci.*"]
-                       :uberjar-name "ui2.jar"
+                       :uberjar-name "repository.jar"
                        }}
   :main cider-ci.main
   :repl-options {:timeout  120000}

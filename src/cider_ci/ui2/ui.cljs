@@ -6,7 +6,7 @@
     [cider-ci.ui2.constants :refer [CONTEXT]]
     [cider-ci.ui2.ui.debug :as debug]
     [cider-ci.ui2.ui.root]
-    [cider-ci.ui2.ui.state :as state]
+    [cider-ci.ui.state :as state]
     [cider-ci.ui2.create-admin.ui]
     [cider-ci.ui2.welcome-page.ui]
     [cider-ci.ui2.session.password.ui]
