@@ -24,16 +24,16 @@ server_base_url: http://localhost:8888
 
 services:
 
-  ui2:
+  repository:
 
     http:
       host: 127.0.0.1
-      port: 8883
+      port: 8881
       context: /cider-ci
-      sub_context: /ui2
+      sub_context: /repositories
       ssl: false
 
     nrepl:
-      port: 7883
+      port: 7881
       bind: "127.0.0.1"
       enabled: true

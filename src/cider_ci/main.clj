@@ -5,6 +5,7 @@
   (:require
     [cider-ci.utils.app :as app]
     [cider-ci.repository.main]
+    [cider-ci.server]
     [cider-ci.web :as web]
     [logbug.catcher :as catcher]
 
@@ -17,4 +18,5 @@
      :throwable Throwable
      :return-fn (fn [e] (System/exit -1))}
     (app/init :repository web/build-main-handler)
-    (cider-ci.repository.main/initialize)))
+    (cider-ci.server/initialize)
+    ))
