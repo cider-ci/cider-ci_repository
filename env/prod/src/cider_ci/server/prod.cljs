@@ -1,4 +1,4 @@
-(ns cider-ci.ui2.prod
+(ns cider-ci.server.prod
   (:require [cider-ci.ui2.ui :as ui]))
 
 ;;ignore println statements in prod

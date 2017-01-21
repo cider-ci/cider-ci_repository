@@ -10,7 +10,7 @@
     [cider-ci.ui2.constants :refer [CONTEXT]]
     [cider-ci.ui2.session.be :as session]
 
-    [cider-ci.ui2.web.shared :as web.shared :refer [dynamic]]
+    ;[cider-ci.ui2.web.shared :as web.shared :refer [dynamic]]
     [cider-ci.ui2.create-admin.be :as create-admin]
     [cider-ci.ui2.welcome-page.be :as welcome-page]
     [cider-ci.ui2.root :as root]
@@ -50,10 +50,10 @@
 
 (def routes
   (cpj/routes
-    (cpj/GET "/" [] #'dynamic)
-    (cpj/GET "/initial-admin" [] #'dynamic)
-    (cpj/GET "/debug" [] #'dynamic)
-    (cpj/GET "/*" [] #'dynamic)
+    ;(cpj/GET "/" [] #'dynamic)
+    ;(cpj/GET "/initial-admin" [] #'dynamic)
+    ;(cpj/GET "/debug" [] #'dynamic)
+    ;(cpj/GET "/*" [] #'dynamic)
     ))
 
 (defn wrap-accept [handler]

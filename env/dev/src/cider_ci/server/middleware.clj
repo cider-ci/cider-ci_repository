@@ -1,4 +1,4 @@
-(ns cider-ci.ui2.middleware
+(ns cider-ci.server.middleware
   (:require [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [prone.middleware :refer [wrap-exceptions]]
             [ring.middleware.reload :refer [wrap-reload]]))
