@@ -11,6 +11,8 @@
     [cider-ci.ui2.welcome-page.ui]
     [cider-ci.ui2.session.password.ui]
 
+    [cider-ci.repository.ui.projects.index]
+
     [cider-ci.ui2.ui.navbar]
 
     [reagent.core :as reagent]
@@ -65,8 +67,7 @@
     (reagent/render [current-page] app))
   (when-let [nav-container (.getElementById js/document "nav")]
     (reagent/render [cider-ci.ui2.ui.navbar/navbar
-                     user current-url authentication-providers] nav-container))
-  )
+                     user current-url authentication-providers] nav-container)))
 
 (defn init! []
   (when-let [app (.getElementById js/document "app")]

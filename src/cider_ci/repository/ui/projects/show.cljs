@@ -15,7 +15,7 @@
     [cider-ci.repository.ui.projects.shared :as projects-components]
 
     [cider-ci.repository.constants :refer [CONTEXT]]
-    [cider-ci.repository.ui.state :as state]
+    [cider-ci.client.state :as state]
 
     [cider-ci.utils.url]
 

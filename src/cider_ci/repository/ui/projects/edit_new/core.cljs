@@ -12,7 +12,7 @@
     [cider-ci.repository.ui.request :as request]
     [accountant.core :as accountant]
 
-    [cider-ci.repository.ui.state :as state]
+    [cider-ci.client.state :as state]
     [cider-ci.repository.ui.projects.edit-new.shared :refer [id project form-data update-form-data update-form-data-value]]
     [reagent.core :as r]
     ))
