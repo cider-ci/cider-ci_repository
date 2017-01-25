@@ -23,7 +23,9 @@
 (secretary/defroute projects-path "/cider-ci/repositories/projects/" [query-params]
   (swap! state/page-state assoc :current-page
          {:component #'page
-          :query-params query-params}))
+          :query-params query-params})
+  (swap! state/client-state assoc :server-requests
+         {:projects true}))
 
 (defn page []
   [:div.projects

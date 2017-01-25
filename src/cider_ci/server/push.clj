@@ -58,7 +58,8 @@
     (logging/debug 'token token)
     token))
 
-(declare chsk-send! connected-uids ring-ajax-post ring-ajax-get-or-ws-handshake)
+(declare chsk-send! connected-uids ring-ajax-post ring-ajax-get-or-ws-handshake
+         event-msg-handler)
 
 (defn initialize-sente []
   (let [{:keys [ch-recv send-fn connected-uids
@@ -72,9 +73,19 @@
     (def ch-chsk                       ch-recv) ; ChannelSocket's receive channel
     (def chsk-send!                    send-fn) ; ChannelSocket's send API fn
     (def connected-uids                connected-uids) ; Watchable, read-only atom
-    ))
 
-;##############################################################################
+
+    )
+
+  (sente/start-server-chsk-router!  ch-chsk event-msg-handler))
+
+;### receive data #############################################################
+
+(defn event-msg-handler [{:as ev-msg :keys [id ?data event]}]
+  (logging/debug 'MESSAGE-RECEIVED ev-msg))
+
+
+;### push data ################################################################
 
 (defn push-data [db user-id]
   (let [user (get (:users db) user-id {})]
@@ -169,5 +180,5 @@
 ;(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
 ;(debug/debug-ns 'cider-ci.auth.http-basic)
-(debug/debug-ns 'cider-ci.auth.authorize)
+;(debug/debug-ns 'cider-ci.auth.authorize)
 (debug/debug-ns *ns*)

@@ -15,28 +15,15 @@
     [goog.dom.dataset :as dataset]
     [reagent.core :as r]
     [taoensso.sente  :as sente :refer (cb-success?)]
-    [timothypratley.patchin :refer [patch]]
+    [timothypratley.patchin :refer [diff patch]]
     ))
 
 
 (defonce debug-db (r/atom {}))
 
+;;; server-state  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defonce server-state (r/atom {}))
-
-; this triggers the state to get out of sync which should show
-; a nice alert then; TODO: test this (how?)
-;(js/setTimeout #(swap! server-state assoc :x 42) 5000)
-
-(-> (.getElementsByTagName js/document "body")
-    (aget 0))
-
-
-(defonce page-state (r/atom {}))
-
-(defonce client-state (r/atom {:debug true}))
-
-(js/setInterval #(swap! client-state
-                       (fn [s] (merge s {:timestamp (js/moment)}))) 1000)
 
 (defn data-attribute [element-name attribute-name]
   (-> (.getElementsByTagName js/document element-name)
@@ -53,8 +40,33 @@
                                     "body" "authproviders"))
 
 
+;;; page-state ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; connect ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defonce page-state (r/atom {}))
+
+
+;;; client-state  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defonce client-state (r/atom {:debug true}))
+
+(js/setInterval #(swap! client-state
+                       (fn [s] (merge s {:timestamp (js/moment)}))) 1000)
+
+(def client-state-push-to-server-keys
+  [:server-requests])
+
+;;; push-pending? ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defonce push-pending? (atom false))
+
+(add-watch
+  client-state :set-push-pending
+  (fn [_ _ old-state new-state]
+    (when (not= (select-keys old-state client-state-push-to-server-keys)
+                (select-keys new-state client-state-push-to-server-keys))
+      (reset! push-pending? true))))
+
+;;; connect and receive ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn clj->json
   [ds]
@@ -101,7 +113,24 @@
 
     nil))
 
-
 (sente/start-chsk-router! ch-chsk event-msg-handler)
 
-;(js* "debugger;")
+
+;;; push client state ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defonce last-pushed-state (atom {}))
+
+(declare push-to-server)
+
+(defn push-to-server []
+  (if-not @push-pending?
+    (js/setTimeout push-to-server 200)
+    (do (reset! push-pending? false)
+        (chsk-send! [:client/state
+                     {:full (select-keys @client-state
+                                         client-state-push-to-server-keys)}]
+                    1000
+                    (fn [reply]
+                      (when-not (sente/cb-success? reply)
+                        (reset! push-pending? true))
+                      (js/setTimeout push-to-server 200))))))

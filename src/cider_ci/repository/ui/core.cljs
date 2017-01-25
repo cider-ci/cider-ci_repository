@@ -103,8 +103,7 @@
 (secretary/defroute (str CONTEXT "/projects/") [query-params]
   (swap! state/page-state assoc :current-page
          {:component #'projects.index/page
-          :query-params query-params
-          }))
+          :query-params query-params}))
 
 (secretary/defroute (str CONTEXT "/projects/new") []
   (swap! state/page-state assoc :current-page

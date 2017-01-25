@@ -56,4 +56,4 @@
 ;(logging-config/set-logger! :level :info)
 ;(debug/debug-ns 'cider-ci.auth.http-basic)
 ;(debug/debug-ns 'cider-ci.auth.session)
-(debug/debug-ns *ns*)
+;(debug/debug-ns *ns*)
