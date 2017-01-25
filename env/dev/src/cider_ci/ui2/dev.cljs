@@ -1,4 +1,4 @@
-(ns ^:figwheel-no-load cider-ci.server.dev
+(ns ^:figwheel-no-load cider-ci.ui2.dev
   (:require [cider-ci.ui2.ui :as ui]
             [figwheel.client :as figwheel :include-macros true]))
 

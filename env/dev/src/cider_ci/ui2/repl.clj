@@ -1,5 +1,5 @@
-(ns cider-ci.server.repl
-  (:use cider-ci.server.handler
+(ns cider-ci.ui2.repl
+  (:use cider-ci.ui2.handler
         ring.server.standalone
         [ring.middleware file-info file]))
 

@@ -30,8 +30,8 @@
                :app
                {:source-paths ["clj-utils/src" "src" "env/dev/src"]
                 :compiler
-                {:main "cider-ci.server.dev"
-                 :asset-path "/cider-ci/server/js/out"
+                {:main "cider-ci.ui2.dev"
+                 :asset-path "/cider-ci/ui2/js/out"
                  :output-to "target/cljsbuild/public/js/app.js"
                  :output-dir "target/cljsbuild/public/js/out"
                  :source-map true

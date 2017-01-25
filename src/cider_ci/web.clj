@@ -35,7 +35,7 @@
   (ring.util.response/redirect "/cider-ci/ui2/"))
 
 (def server-handler
-  (#'cider-ci.server.web/build-main-handler "/cider-ci/server"))
+  (cider-ci.server.web/build-main-handler "/cider-ci/server"))
 
 (def routes
   (cpj/routes
@@ -45,32 +45,12 @@
     (cpj/GET "/" [] redirect-to-ui2)
     (cpj/ANY "*" [] dead-end-handler)))
 
-(defn wrap-accept [handler]
-  (ring.middleware.accept/wrap-accept
-    handler
-    {:mime
-     ["application/json-roa+json" :qs 1 :as :json-roa
-      "application/json" :qs 1 :as :json
-      "text/html" :qs 1 :as :html
-      ]}))
-
-(defn html2server [req handler]
-  (if (= (-> req :accept :mime) :html)
-    (server-handler req)
-    (handler req)))
-
-(defn wrap-html2server [handler]
-  (fn [req] (html2server req handler)))
-
 (defn build-main-handler [_]
   (I> wrap-handler-with-logging
-      routes
-      wrap-html2server
-      wrap-accept))
-
+      routes))
 
 ;#### debug ###################################################################
 ;(logging-config/set-logger! :level :debug)
 ;(logging-config/set-logger! :level :info)
 ;(debug/debug-ns 'cider-ci.auth.http-basic)
-(debug/debug-ns *ns*)
+;(debug/debug-ns *ns*)
