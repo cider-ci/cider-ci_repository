@@ -65,20 +65,20 @@
                              })]
     (def ring-ajax-post                (anti-forgery/wrap ajax-post-fn))
     (def ring-ajax-get-or-ws-handshake ajax-get-or-ws-handshake-fn)
-    (def ch-chsk                       ch-recv) ; ChannelSocket's receive channel
-    (def chsk-send!                    send-fn) ; ChannelSocket's send API fn
-    (def connected-uids                connected-uids) ; Watchable, read-only atom
-
-
-    )
-
-  (sente/start-server-chsk-router!  ch-chsk event-msg-handler))
+    (def ch-chsk ch-recv)
+    (def chsk-send! send-fn)
+    (def connected-uids connected-uids))
+  (sente/start-server-chsk-router! ch-chsk #'event-msg-handler))
 
 
 ;### receive data #############################################################
 
 (defn event-msg-handler [{mkey :id data :?data client-id :uid}]
-  (logging/info 'MESSAGE-RECEIVED [mkey client-id data]))
+  (logging/info 'MESSAGE-RECEIVED [mkey client-id data])
+  (case mkey
+    :client/state (swap! clients assoc-in
+                         [client-id :client-state] (:full data))
+    :chsk/uidport-open nil))
 
 
 ;### push data ################################################################
