@@ -118,8 +118,6 @@
 
 ;;; push client state ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defonce last-pushed-state (atom {}))
-
 (declare push-to-server)
 
 (defn push-to-server []
@@ -134,3 +132,6 @@
                       (when-not (sente/cb-success? reply)
                         (reset! push-pending? true))
                       (js/setTimeout push-to-server 200))))))
+
+
+(js/setTimeout push-to-server 100)

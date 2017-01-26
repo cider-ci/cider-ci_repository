@@ -15,6 +15,7 @@
     [cider-ci.utils.digest :refer [digest]]
     [cider-ci.utils.ring]
 
+    [fipp.edn :refer (pprint) :rename {pprint fipp}]
     [clojure.data.json :as json]
     [clojure.set :refer [difference]]
     [compojure.core :as cpj]
@@ -39,12 +40,6 @@
                       (into {}))
     :else data))
 
-
-
-;(-> @clients first second keys digest)
-;(->> @clients (map #(let [[k _] %] k)))
-
-;##############################################################################
 
 ;##############################################################################
 
@@ -79,10 +74,11 @@
 
   (sente/start-server-chsk-router!  ch-chsk event-msg-handler))
 
+
 ;### receive data #############################################################
 
-(defn event-msg-handler [{:as ev-msg :keys [id ?data event]}]
-  (logging/debug 'MESSAGE-RECEIVED ev-msg))
+(defn event-msg-handler [{mkey :id data :?data client-id :uid}]
+  (logging/info 'MESSAGE-RECEIVED [mkey client-id data]))
 
 
 ;### push data ################################################################
@@ -103,13 +99,13 @@
         swap-fn (fn [clients]
                   (if-not (contains?  clients client-id)
                     clients ; nothing known about this client-id
-                    (do (if-let [current-remote-state (get clients client-id nil)]
+                    (do (if-let [current-remote-state (:server-state (get clients client-id nil))]
                           (let [d (diff current-remote-state target-remote-state)]
                             (reset! push-data {:patch d
                                                :digest target-remote-state-digest}))
                           (reset! push-data {:full target-remote-state
                                              :digest target-remote-state-digest}))
-                        (assoc clients client-id target-remote-state))))]
+                        (assoc-in clients [client-id :server-state] target-remote-state))))]
     (def ^:dynamic *last-pushed-data* {:data target-remote-state :digest target-remote-state-digest})
     (logging/debug 'target-remote-state (prn-str target-remote-state))
     (swap! clients swap-fn)
@@ -129,7 +125,9 @@
                   (-> new_state prn-str))
         (push-to-all-clients new_state)))))
 
+
 ;##############################################################################
+
 
 (defn update-connected-clients-list [_ _ old-state new-state]
   (let [current-clients (-> new-state :any)
@@ -181,4 +179,4 @@
 ;(logging-config/set-logger! :level :info)
 ;(debug/debug-ns 'cider-ci.auth.http-basic)
 ;(debug/debug-ns 'cider-ci.auth.authorize)
-(debug/debug-ns *ns*)
+;(debug/debug-ns *ns*)
