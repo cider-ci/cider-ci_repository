@@ -142,7 +142,7 @@
       (swap! clients (fn [cs cid] (assoc cs cid nil)) added-client)
       (push-to-client (server.state/get-db) added-client))))
 
-(defn initialize-watch-connected-uids []
+(defn update-connected-clients-list-when-connected-uis-change []
   (add-watch connected-uids :connected-uids #'update-connected-clients-list))
 
 ;##############################################################################
@@ -169,7 +169,7 @@
 
 (defn initialize []
   (initialize-sente)
-  (initialize-watch-connected-uids)
+  (update-connected-clients-list-when-connected-uis-change)
   (initialize-watch-state-db)
   ;(debug/debug-ns *ns*)
   )

@@ -100,15 +100,6 @@
 ;; Routes
 
 
-(secretary/defroute (str CONTEXT "/projects/") [query-params]
-  (swap! state/page-state assoc :current-page
-         {:component #'projects.index/page
-          :query-params query-params}))
-
-(secretary/defroute (str CONTEXT "/projects/new") []
-  (swap! state/page-state assoc :current-page
-         {:component #'projects.edit-new.core/new-page }))
-
 (secretary/defroute (str CONTEXT "/projects/:id") {id :id}
   (swap! state/page-state assoc :current-page
          {:component #'projects.show/page :id id}))

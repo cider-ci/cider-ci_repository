@@ -12,6 +12,7 @@
     [cider-ci.ui2.session.password.ui]
 
     [cider-ci.repository.ui.projects.index]
+    [cider-ci.repository.ui.projects.edit-new.core]
 
     [cider-ci.ui2.ui.navbar]
 
