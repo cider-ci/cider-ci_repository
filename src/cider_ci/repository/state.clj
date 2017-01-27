@@ -49,8 +49,10 @@
 
 (defn initialize []
   (state.repositories/initialize)
-  (state.users/initialize)
-  (state.config/initialize))
+  ; TODO move users (and config?) to server
+  ;(state.users/initialize)
+  ;(state.config/initialize)
+  )
 
 
 ;#### debug ###################################################################
