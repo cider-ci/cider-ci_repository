@@ -100,10 +100,6 @@
 ;; Routes
 
 
-(secretary/defroute (str CONTEXT "/projects/:id") {id :id}
-  (swap! state/page-state assoc :current-page
-         {:component #'projects.show/page :id id}))
-
 (secretary/defroute (str CONTEXT "/projects/:id/issues/:keys") {id :id encoded-ks :keys}
   (swap! state/page-state assoc :current-page
          {:component #'projects.show/issue
@@ -113,10 +109,6 @@
 (secretary/defroute (str CONTEXT "/projects/:id/error/:keys") {id :id raw-keys :keys}
   (swap! state/page-state assoc :current-page
          {:component #'projects.show/issue :id id}))
-
-(secretary/defroute (str CONTEXT "/projects/:id/edit") {id :id}
-  (swap! state/page-state assoc :current-page
-         {:component #'projects.edit-new.core/edit :id id}))
 
 (secretary/defroute (str CONTEXT "/ui/debug") []
   (swap! state/page-state assoc :current-page
