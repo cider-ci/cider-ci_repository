@@ -16,6 +16,7 @@ require 'pry'
 
 RSpec.configure do |config|
   config.include Helpers::Global
+  config.include Helpers::Sequel
 
   config.before :all do
     @spec_seed = \
