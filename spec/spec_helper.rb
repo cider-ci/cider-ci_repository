@@ -7,16 +7,14 @@ require 'config/rails'
 require 'config/database'
 require 'config/web'
 require 'helpers/global'
-require 'helpers/sequel'
+require 'helpers/db'
 require 'rspec-rails'
 
 require 'pry'
 
-
-
 RSpec.configure do |config|
   config.include Helpers::Global
-  config.include Helpers::Sequel
+  config.include Helpers::DB
 
   config.before :all do
     @spec_seed = \
