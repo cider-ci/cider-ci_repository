@@ -19,13 +19,20 @@
     [reagent.core :as r]
     ))
 
-(declare page)
+(declare new-page edit-page)
 
-(secretary/defroute project-edit-new-path
+(secretary/defroute project-new-path
   (str CONTEXT "/projects/new") [query-params]
   (swap! state/page-state assoc :current-page
-         {:component #'page
+         {:component #'new-page
           :query-params query-params})
+  (swap! state/client-state assoc :server-requests
+         {:projects true}))
+
+(secretary/defroute project-edit-path
+  (str CONTEXT "/projects/:id/edit") {id :id}
+  (swap! state/page-state assoc :current-page
+         {:component #'edit-page :id id})
   (swap! state/client-state assoc :server-requests
          {:projects true}))
 
@@ -84,7 +91,7 @@
        :manage_remote_push_hooks false
        })))
 
-(defn page []
+(defn new-page []
   (r/create-class
     {:component-will-mount reset-for-new-state!
      :reagent-render
@@ -126,7 +133,7 @@
          :update_notification_token]))))
 
 
-(defn edit []
+(defn edit-page []
   (r/create-class
     {:component-will-mount reset-for-edit-state!
      :reagent-render

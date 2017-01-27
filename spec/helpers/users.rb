@@ -9,5 +9,16 @@ module Helpers
       @users.insert(login: 'admin', is_admin: true, password_digest: password_digest)
     end
 
+    def sign_in_as user
+      visit '/cider-ci/ui2/'
+      click_on 'Sign in with password'
+      within ".sign-in-page" do |el|
+        find('input#login').set user
+        find('input#password').set 'secret'
+        click_on 'Sign me in'
+      end
+      expect(first(".navbar .user")).to have_content user
+    end
+
   end
 end
