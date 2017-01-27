@@ -9,6 +9,7 @@
   (:require
     [cider-ci.server.state.db :as db]
     [cider-ci.server.state.users :as users]
+    [cider-ci.server.state.repositories :as repositories]
 
     [clj-logging-config.log4j :as logging-config]
     [clojure.tools.logging :as logging]
@@ -27,7 +28,8 @@
                  (fun _key _ref _old _new)))))
 
 (defn initialize []
-  (users/initialize))
+  (users/initialize)
+  (repositories/initialize))
 
 
 ;(debug/debug-ns *ns*)

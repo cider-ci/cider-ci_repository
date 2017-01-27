@@ -74,11 +74,13 @@
 ;### receive data #############################################################
 
 (defn event-msg-handler [{mkey :id data :?data client-id :uid}]
-  (logging/info 'MESSAGE-RECEIVED [mkey client-id data])
+  ;(logging/info 'MESSAGE-RECEIVED [mkey client-id data])
   (case mkey
     :client/state (swap! clients assoc-in
                          [client-id :client-state] (:full data))
-    :chsk/uidport-open nil))
+    :chsk/uidport-open nil
+    :chsk/uidport-close nil
+    ))
 
 
 ;### push data ################################################################
@@ -146,7 +148,6 @@
   (add-watch connected-uids :connected-uids #'update-connected-clients-list))
 
 ;##############################################################################
-
 
 
 (cpj/defroutes routes

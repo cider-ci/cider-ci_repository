@@ -30,4 +30,5 @@
              (logging/debug 'DB-CHANGE {:before (:repositories before) :after (:repositories after)})
              ))
 
+;(fipp.edn/pprint @db)
 ;(debug/debug-ns *ns*)

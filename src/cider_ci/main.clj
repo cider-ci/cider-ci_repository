@@ -19,4 +19,4 @@
      :return-fn (fn [e] (System/exit -1))}
     (app/init :repository web/build-main-handler)
     (cider-ci.server/initialize)
-    ))
+    (cider-ci.repository.main/initialize)))
