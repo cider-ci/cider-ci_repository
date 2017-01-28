@@ -7,9 +7,10 @@
   (:require [cider-ci.utils.core :refer [keyword str]])
 
   (:require
+    [cider-ci.server.state.config :as config]
     [cider-ci.server.state.db :as db]
-    [cider-ci.server.state.users :as users]
     [cider-ci.server.state.repositories :as repositories]
+    [cider-ci.server.state.users :as users]
 
     [clj-logging-config.log4j :as logging-config]
     [clojure.tools.logging :as logging]
@@ -29,6 +30,7 @@
 
 (defn initialize []
   (users/initialize)
+  (config/initialize)
   (repositories/initialize))
 
 

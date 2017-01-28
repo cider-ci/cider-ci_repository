@@ -28,4 +28,4 @@
   (watch)
   (update-repos-in-server-db))
 
-(debug/debug-ns *ns*)
+;(debug/debug-ns *ns*)
